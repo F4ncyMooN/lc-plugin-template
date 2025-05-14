@@ -20,74 +20,53 @@ class Solution
 public:
     vector<vector<char>> track;
     bool finished;
-    vector<char> choices(vector<vector<char>> &board, int i, int j)
+    bool is_valid(vector<vector<char>> &board, int r, int c, char num)
     {
-        vector<bool> options(9, true);
-        // column+row
-        for (int p = 0; p < 9; p++)
+        for (int i = 0; i < 9; i++)
         {
-            if (board[i][p] != '.')
-                options[board[i][p] - '1'] = false;
-            if (board[p][j] != '.')
-                options[board[p][j] - '1'] = false;
+            // 判断行是否存在重复
+            if (board[r][i] == num)
+                return false;
+            // 判断列是否存在重复
+            if (board[i][c] == num)
+                return false;
+            // 判断 3 x 3 方框是否存在重复
+            if (board[(r / 3) * 3 + i / 3][(c / 3) * 3 + i % 3] == num)
+                return false;
         }
-
-        // small 3*3
-        for (int k = 0; k < 3; k++)
-        {
-            for (int l = 0; l < 3; l++)
-            {
-                auto c = board[3 * (i / 3) + k][3 * (j / 3) + l];
-                if (c != '.')
-                {
-                    options[c - '1'] = false;
-                }
-            }
-        }
-        vector<char> ret;
-        for (int p = 0; p < 9; p++)
-        {
-            if (options[p])
-                ret.push_back('1' + p);
-        }
-        return ret;
+        return true;
     }
     void solveSudoku(vector<vector<char>> &board)
     {
-        vector<vector<int>> track;
-        for (int i = 0; i < 9; i++)
-        {
-            for (int j = 0; j < 9; j++)
-            {
-                if (board[i][j] == '.')
-                {
-                    track.push_back(vector<int>{i, j});
-                }
-            }
-        }
-        backtrace(board, track);
+        backtrace(board, 0);
     }
-    void backtrace(vector<vector<char>> &board, vector<vector<int>> track)
+    void backtrace(vector<vector<char>> &board, int index)
     {
-        if (track.size() == 0)
+        int i = index / 9, j = index % 9;
+
+        if (finished)
+            return;
+
+        if (index >= 9 * 9)
         {
             finished = true;
             return;
         }
-        auto pos = track[track.size() - 1];
-        int i = pos[0], j = pos[1];
-        auto options = choices(board, i, j);
-
-        for (auto c : options)
+        if (board[i][j] != '.')
         {
+            backtrace(board, index + 1);
+            return;
+        }
+        for (char c = '1'; c <= '9'; c++)
+        {
+            if (!is_valid(board, i, j, c))
+                continue;
             board[i][j] = c;
-            track.pop_back();
-            backtrace(board, track);
+            backtrace(board, index + 1);
             if (finished)
             {
                 break;
             }
-            track.push_back(pos);
             board[i][j] = '.';
         }
     }
