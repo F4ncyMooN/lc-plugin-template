@@ -7,3 +7,5 @@
 *.json
 build
 *.DS_Store
+*.dSYM
+tmp/
