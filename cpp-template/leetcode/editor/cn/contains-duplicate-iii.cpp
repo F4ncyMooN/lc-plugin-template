@@ -18,23 +18,24 @@ using namespace std;
 // @lc code=start
 class Solution {
    public:
-    bool containsNearbyAlmostDuplicate(vector<int>& nums, int k, int diff) {
-        if (k == 0) return false;
-        unordered_map<int, int> counts;
+    long size = 0;
+    long getIdx(long u) { return u >= 0 ? u / size : ((u + 1) / size) - 1; }
+    bool containsNearbyAlmostDuplicate(vector<int>& nums, int indexDiff, int valueDiff) {
+        size = valueDiff + 1L;
+        unordered_map<long, long> counts;
         int left = 0, right = 0;
         while (right < nums.size()) {
-            int r = nums[right++];
-            counts[r]++;
-            for (int i = -diff; i <= diff; i++) {
-                if (i == 0 && counts[r + i] == 2) return true;
-                if (i != 0 && counts.count(r + i) && counts[r + i] == 1)
-                    return true;
-            }
+            long r = nums[right] * 1L;
+            auto idx = getIdx(r);
+            if (counts.count(idx)) return true;
+            if (counts.count(idx - 1) && abs(r - counts[idx - 1]) <= valueDiff) return true;
+            if (counts.count(idx + 1) && abs(r - counts[idx + 1]) <= valueDiff) return true;
+            counts[idx] = r;
 
-            while (right - left == k + 1) {
-                counts[nums[left]]--;
-                left++;
+            while (right - left >= indexDiff) {
+                counts.erase(getIdx(nums[left++]));
             }
+            right++;
         }
         return false;
     }
@@ -43,6 +44,11 @@ class Solution {
 
 int main() {
     Solution solution;
+    solution.size = 3;
+    cout << solution.getIdx(-3L);
+    cout << solution.getIdx(6L);
+    vector<int> tst({1, 5, 9, 1, 5, 9});
+    solution.containsNearbyAlmostDuplicate(tst, 2, 3);
     // your test code here
 }
 
