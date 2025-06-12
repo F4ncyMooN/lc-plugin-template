@@ -5,63 +5,38 @@
  * [264] 丑数 II
  */
 
-#include <iostream>
-#include <vector>
-#include <string>
 #include <algorithm>
+#include <iostream>
+#include <string>
+#include <vector>
+
 #include "../common/ListNode.cpp"
 // #include "../common/TreeNode.cpp"
 
 using namespace std;
 
 // @lc code=start
-class Solution
-{
-public:
-    int nthUglyNumber(int n)
-    {
-        if (n == 1)
-            return 1;
-        int a = 1, b = 1, c = 1;
-        int ugly = 1;
-        for (int i = 0; i < n - 1; i++)
-        {
-            ugly = min({a * 2, b * 3, c * 5});
-            // if (a * 2 <= b * 3 && a * 2 <= c * 5)
-            // {
-            //     ugly = a * 2;
-            // }
-            // else if (b * 3 <= a * 2 && b * 3 <= c * 5)
-            // {
-            //     ugly = b * 3;
-            // }
-            // else // (c * 5 <= a * 2 && c * 5 <= b * 3)
-            // {
-            //     ugly = c * 5;
-            // }
-            if (ugly == a * 2)
-            {
-                a++;
-            }
-            if (ugly == b * 3)
-            {
-                b++;
-            }
-            if (ugly == c * 5)
-            {
-                c++;
-            }
+class Solution {
+   public:
+    int nthUglyNumber(int n) {
+        if (n == 1) return 1;
+        vector<int> dp(n + 1, 1);
+        int p_2 = 1, p_3 = 1, p_5 = 1;
+        for (int i = 2; i <= n; i++) {
+            dp[i] = min({dp[p_2] * 2, dp[p_3] * 3, dp[p_5] * 5});
+            if (dp[p_2] * 2 == dp[i]) p_2++;
+            if (dp[p_3] * 3 == dp[i]) p_3++;
+            if (dp[p_5] * 5 == dp[i]) p_5++;
         }
-        return ugly;
+        return dp[n];
     }
 };
 // @lc code=end
 
-int main()
-{
+int main() {
     Solution solution;
     // your test code here
-    solution.nthUglyNumber(12);
+    solution.nthUglyNumber(10);
 }
 
 /*
