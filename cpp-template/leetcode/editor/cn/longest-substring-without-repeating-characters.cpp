@@ -19,26 +19,19 @@ using namespace std;
 class Solution {
    public:
     int lengthOfLongestSubstring(string s) {
+        if (s.size() == 0) return 0;
         int left = 0, right = 0;
-        int unique = 0;
-        int res = 0;
-        unordered_map<char, int> window;
-        while (right < s.size()) {
-            char cr = s[right++];
-            window[cr]++;
-            if (window[cr] == 1) {
-                unique++;
-                res = max(unique, res);
-            }
+        unordered_map<char, int> counts;
+        int res = INT_MIN;
+        // window [left, right]
+        for (; right < s.size(); right++) {
+            char t = s[right];
+            counts[t]++;
 
-            while (right - left > unique) {
-                char cl = s[left++];
-
-                if (window[cl] == 1) {
-                    unique--;
-                }
-                window[cl]--;
+            for (; left <= right && (counts[t] > 1); left++) {
+                counts[s[left]]--;
             }
+            res = max(res, right - left + 1);
         }
         return res;
     }
@@ -48,6 +41,7 @@ class Solution {
 int main() {
     Solution solution;
     // your test code here
+    solution.lengthOfLongestSubstring("bbbbb");
 }
 
 /*
