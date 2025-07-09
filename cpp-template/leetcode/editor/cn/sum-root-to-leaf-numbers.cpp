@@ -1,8 +1,8 @@
 /*
- * @lc app=leetcode.cn id=144 lang=cpp
+ * @lc app=leetcode.cn id=129 lang=cpp
  * @lcpr version=30201
  *
- * [144] 二叉树的前序遍历
+ * [129] 求根节点到叶节点数字之和
  */
 
 #include <iostream>
@@ -29,16 +29,20 @@ using namespace std;
  */
 class Solution {
    public:
-    vector<int> res;
-    vector<int> preorderTraversal(TreeNode* root) {
-        traverse(root);
-        return res;
+    int64_t total = 0;
+    int sumNumbers(TreeNode* root) {
+        if (root == nullptr) return 0;
+        traverse(root, 0);
+        return total;
     }
-    void traverse(TreeNode* root) {
-        if (root == nullptr) return;
-        res.push_back(root->val);
-        traverse(root->left);
-        traverse(root->right);
+    void traverse(TreeNode* root, int64_t n) {
+        n = n * 10 + root->val;
+        if (root->left == nullptr && root->right == nullptr) {
+            total += n;
+            return;
+        }
+        if (root->left != nullptr) traverse(root->left, n);
+        if (root->right != nullptr) traverse(root->right, n);
     }
 };
 // @lc code=end
@@ -50,19 +54,11 @@ int main() {
 
 /*
 // @lcpr case=start
-// [1,null,2,3]\n
+// [1,2,3]\n
 // @lcpr case=end
 
 // @lcpr case=start
-// [1,2,3,4,5,null,8,null,null,6,7,9]\n
-// @lcpr case=end
-
-// @lcpr case=start
-// []\n
-// @lcpr case=end
-
-// @lcpr case=start
-// [1]\n
+// [4,9,0,5,1]\n
 // @lcpr case=end
 
  */

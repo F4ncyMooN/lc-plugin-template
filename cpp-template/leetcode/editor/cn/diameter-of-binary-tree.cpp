@@ -1,8 +1,8 @@
 /*
- * @lc app=leetcode.cn id=144 lang=cpp
+ * @lc app=leetcode.cn id=543 lang=cpp
  * @lcpr version=30201
  *
- * [144] 二叉树的前序遍历
+ * [543] 二叉树的直径
  */
 
 #include <iostream>
@@ -29,16 +29,21 @@ using namespace std;
  */
 class Solution {
    public:
-    vector<int> res;
-    vector<int> preorderTraversal(TreeNode* root) {
+    int res = 0;
+    int diameterOfBinaryTree(TreeNode* root) {
         traverse(root);
         return res;
     }
     void traverse(TreeNode* root) {
         if (root == nullptr) return;
-        res.push_back(root->val);
+        res = max(res, height(root->left) + height(root->right));
+
         traverse(root->left);
         traverse(root->right);
+    }
+    int height(TreeNode* root) {
+        if (root == nullptr) return 0;
+        return max(height(root->left), height(root->right)) + 1;
     }
 };
 // @lc code=end
@@ -50,19 +55,11 @@ int main() {
 
 /*
 // @lcpr case=start
-// [1,null,2,3]\n
+// [1,2,3,4,5]\n
 // @lcpr case=end
 
 // @lcpr case=start
-// [1,2,3,4,5,null,8,null,null,6,7,9]\n
-// @lcpr case=end
-
-// @lcpr case=start
-// []\n
-// @lcpr case=end
-
-// @lcpr case=start
-// [1]\n
+// [1,2]\n
 // @lcpr case=end
 
  */
